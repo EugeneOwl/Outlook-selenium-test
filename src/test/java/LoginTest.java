@@ -22,7 +22,7 @@ public class LoginTest {
     public void setUp() throws Exception {
         config.setUpDriverEnvironment();
         driver = new ChromeDriver();
-        webDriverWait = new WebDriverWait(driver, 1);
+        webDriverWait = new WebDriverWait(driver, 2);
         properties = config.getConfigProperties();
 
         driver.get(properties.getProperty("login.url"));
@@ -30,7 +30,7 @@ public class LoginTest {
 
     @After
     public void tearDown() throws Exception {
-        //driver.close();
+        driver.close();
     }
 
     @Test
@@ -42,7 +42,28 @@ public class LoginTest {
     }
 
     @Test
-    public void testLoginSuccess() throws InterruptedException {
+    public void testLoginSuccess() {
+        logIn();
+
+        String expectedUrl = properties.getProperty("inbox.url");
+        String actualUrl = driver.getCurrentUrl();
+
+        Assert.assertEquals(expectedUrl, actualUrl);
+    }
+
+    @Test
+    public void testLogoutSuccess() {
+        logIn();
+        logOut();
+
+        String expectedUrl = properties.getProperty("after.logout.url");
+        webDriverWait.until(ExpectedConditions.urlToBe(expectedUrl));
+        String actualUrl = driver.getCurrentUrl();
+
+        Assert.assertEquals(expectedUrl, actualUrl);
+    }
+
+    private void logIn() {
         String loginInputId = properties.getProperty("login.input.id");
         String loginSubmitId = properties.getProperty("login.submit.id");
 
@@ -51,19 +72,22 @@ public class LoginTest {
 
         String login = properties.getProperty("login");
         String password = properties.getProperty("password");
-        System.out.println(password);
 
         driver.findElement(By.id(loginInputId)).sendKeys(login);
         driver.findElement(By.id(loginSubmitId)).click();
 
         webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id(passwordInputId)));
-
         driver.findElement(By.id(passwordInputId)).sendKeys(password);
         driver.findElement(By.id(passwordSubmitId)).click();
+    }
 
-        String expectedUrl = properties.getProperty("inbox.url");
-        String actualUrl = driver.getCurrentUrl();
+    private void logOut() {
+        String upperRightIconClass = properties.getProperty("upper.right.icon.class");
+        String logoutSubmitId = properties.getProperty("logout.submit.id");
 
-        Assert.assertEquals(expectedUrl, actualUrl);
+        driver.findElement(By.className(upperRightIconClass)).click();
+
+        webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id(logoutSubmitId)));
+        driver.findElement(By.id(logoutSubmitId)).click();
     }
 }
