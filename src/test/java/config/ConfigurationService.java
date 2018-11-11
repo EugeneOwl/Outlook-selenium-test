@@ -2,6 +2,7 @@ package config;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 import static constant.Enviroment.CHROME_WEB_DRIVER_KEY;
@@ -20,10 +21,16 @@ public class ConfigurationService {
         if (configProperties != null) {
             return configProperties;
         }
-        InputStream configInput = new FileInputStream(PROPERTIES_FILE_PATH);
+        return loadPropertiesFromConfigFile();
+    }
+
+    private Properties loadPropertiesFromConfigFile() throws Exception {
+        InputStream inputStream = new FileInputStream(PROPERTIES_FILE_PATH);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
         configProperties = new Properties();
-        configProperties.load(configInput);
-        configInput.close();
+        configProperties.load(inputStreamReader);
+        inputStream.close();
+        inputStreamReader.close();
         return configProperties;
     }
 }
