@@ -68,7 +68,7 @@ public class BaseOutlookTest {
         webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
     }
 
-    protected void waiForElementsToLoad(By elementBy) {
+    protected void waitForElementsToLoad(By elementBy) {
         webDriverWait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(elementBy));
     }
 

@@ -1,5 +1,4 @@
 import base.BaseOutlookTest;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +28,7 @@ public class ReadUnreadTest extends BaseOutlookTest {
         getElementByClassName(mailsFilterOptionsClass, mailsFilterOptionUnreadButtonPosition).click();
 
         String expectedMessage = properties.getProperty("mails.no.unread.mails.message");
+        waitForElementsToLoad(By.className(mailsNoUnreadMailsMessageClass));
         String actualMessage = driver.findElement(By.className(mailsNoUnreadMailsMessageClass)).getText();
 
         Assert.assertEquals(expectedMessage, actualMessage);
